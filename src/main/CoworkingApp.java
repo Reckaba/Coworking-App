@@ -1,5 +1,6 @@
 package main;
 
+import exception.ReservationException;
 import model.CoworkingSpace;
 import model.Reservation;
 import service.CoworkingSpaceService;
@@ -7,11 +8,10 @@ import service.ReservationService;
 import java.util.Scanner;
 import java.util.List;
 
-
 public class CoworkingApp {
-    private static Scanner scanner = new Scanner(System.in);
-    private static CoworkingSpaceService spaceService = new CoworkingSpaceService();
-    private static ReservationService reservationService = new ReservationService();
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final CoworkingSpaceService spaceService = new CoworkingSpaceService();
+    private static final ReservationService reservationService = new ReservationService();
 
     public static void main(String[] args) {
         while (true) {
@@ -23,6 +23,7 @@ public class CoworkingApp {
                 System.out.print("Choose an option: ");
                 int choice = scanner.nextInt();
                 scanner.nextLine();
+
                 switch (choice) {
                     case 1 -> adminMenu();
                     case 2 -> customerMenu();
@@ -49,11 +50,14 @@ public class CoworkingApp {
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
+
             switch (choice) {
                 case 1 -> addSpace();
                 case 2 -> removeSpace();
                 case 3 -> viewReservations();
-                case 4 -> { return; }
+                case 4 -> {
+                    return;
+                }
                 default -> System.out.println("Invalid option.");
             }
         }
@@ -64,12 +68,17 @@ public class CoworkingApp {
         String type = scanner.nextLine();
         System.out.print("Enter price: ");
         double price = scanner.nextDouble();
+        scanner.nextLine();
+
         spaceService.addSpace(type, price);
+        System.out.println("Space added successfully!");
     }
 
     private static void removeSpace() {
         System.out.print("Enter space ID to remove: ");
         int id = scanner.nextInt();
+        scanner.nextLine();
+
         if (spaceService.removeSpace(id)) {
             System.out.println("Coworking space removed.");
         } else {
@@ -88,7 +97,6 @@ public class CoworkingApp {
         }
     }
 
-
     private static void customerMenu() {
         while (true) {
             System.out.println("\nCustomer Menu:");
@@ -100,12 +108,15 @@ public class CoworkingApp {
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
+
             switch (choice) {
                 case 1 -> browseSpaces();
                 case 2 -> makeReservation();
                 case 3 -> viewReservations();
                 case 4 -> cancelReservation();
-                case 5 -> { return; }
+                case 5 -> {
+                    return;
+                }
                 default -> System.out.println("Invalid option.");
             }
         }
@@ -120,21 +131,28 @@ public class CoworkingApp {
     }
 
     private static void makeReservation() {
-        System.out.print("Enter your name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter space ID to book: ");
-        int spaceId = scanner.nextInt();
-        scanner.nextLine();
-        System.out.print("Enter date (YYYY-MM-DD): ");
-        String date = scanner.nextLine();
-        System.out.print("Enter time (HH:MM): ");
-        String time = scanner.nextLine();
-        reservationService.makeReservation(name, spaceId, date, time);
+        try {
+            System.out.print("Enter your name: ");
+            String name = scanner.nextLine();
+            System.out.print("Enter space ID to book: ");
+            int spaceId = scanner.nextInt();
+            scanner.nextLine();
+            System.out.print("Enter date (YYYY-MM-DD): ");
+            String date = scanner.nextLine();
+            System.out.print("Enter time (HH:MM): ");
+            String time = scanner.nextLine();
+
+            reservationService.makeReservation(name, spaceId, date, time);
+        } catch (Exception e) {
+            System.out.println("Error while making reservation: " + e.getMessage());
+        }
     }
 
     private static void cancelReservation() {
         System.out.print("Enter reservation ID to cancel: ");
         int id = scanner.nextInt();
+        scanner.nextLine();
+
         if (reservationService.cancelReservation(id)) {
             System.out.println("Reservation cancelled.");
         } else {
