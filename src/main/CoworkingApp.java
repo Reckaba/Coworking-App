@@ -17,7 +17,7 @@ public class CoworkingApp {
         while (true) {
             try {
                 System.out.println("\nMain Menu:");
-                System.out.println("1. Admin Login");
+                System.out.println("1. Admin Loginn");
                 System.out.println("2. User Login");
                 System.out.println("3. Exit");
                 System.out.print("Choose an option: ");
